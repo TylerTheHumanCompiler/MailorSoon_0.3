@@ -243,7 +243,7 @@ public class Functions extends Thread {
         if(grnval.length() == 1) {g = "0" + grnval;} else {g = grnval;}
         if(bluval.length() == 1) {b = "0" + bluval;} else {b = bluval;}
         String rgb = new String(r + g + b);
-        String charbx = new String("<span style=\"text-shadow: 1px 1px 1px #000; color:#" + rgb + "; font-size: 10px; line-height: 0.7; font-family: \'verdana\';\">" + c + "</span>");
+        String charbx = new String("<span style=\"text-shadow: 1px 1px 1px #000; color:#" + rgb + "; line-height: 0.7;\">" + c + "</span>");
         return charbx;
 
     }

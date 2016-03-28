@@ -51,8 +51,8 @@ import static javafx.geometry.NodeOrientation.RIGHT_TO_LEFT;
  * HTML editor skin.
  */
 public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior> {
-    private GridPane gridPane;
-
+    protected static GridPane gridPane;
+    protected static Object[] objectchildren;
     private ToolBar toolbar1;
     private ToolBar toolbar2;
 
@@ -204,6 +204,20 @@ public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior
             }
         }
     };
+
+    public static void hideEddyToolBar() {
+        objectchildren = gridPane.getChildren().toArray();
+        gridPane.getChildren().clear();
+
+    }
+
+    public static void showEddyToolBar() {
+        for(Object obj : objectchildren) {
+            Node node = ((Node) obj);
+            gridPane.getChildren().addAll(node);
+        }
+    }
+
     public HTMLEddy2Skin(HTMLEddy2 htmlEditor) {
         super(htmlEditor, new HTMLEddy2Behavior(htmlEditor));
 
@@ -220,7 +234,6 @@ public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior
         toolbar2 = new ToolBar();
         toolbar2.getStyleClass().add("bottom-toolbar");
         gridPane.add(toolbar2, 0, 1);
-
 //        populateToolbars();
 
         webView = new WebView();

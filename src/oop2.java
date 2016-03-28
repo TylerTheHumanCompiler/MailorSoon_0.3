@@ -2,8 +2,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -17,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -38,7 +42,7 @@ import java.lang.reflect.Field;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -491,6 +495,190 @@ for(String listentry55 : knt) {
         sckont.setContent(kntkt);
         tt.setContent(sckont);
 
+
+        TableView<Person> table = new TableView<Person>();
+
+
+        ObservableList<Person> kontakts = new ObservableList<Person>() {
+            @Override
+            public void addListener(ListChangeListener<? super Person> listener) {
+
+            }
+
+            @Override
+            public void removeListener(ListChangeListener<? super Person> listener) {
+
+            }
+
+            @Override
+            public boolean addAll(Person... elements) {
+                return false;
+            }
+
+            @Override
+            public boolean setAll(Person... elements) {
+                return false;
+            }
+
+            @Override
+            public boolean setAll(Collection<? extends Person> col) {
+                return false;
+            }
+
+            @Override
+            public boolean removeAll(Person... elements) {
+                return false;
+            }
+
+            @Override
+            public boolean retainAll(Person... elements) {
+                return false;
+            }
+
+            @Override
+            public void remove(int from, int to) {
+
+            }
+
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public boolean contains(Object o) {
+                return false;
+            }
+
+            @Override
+            public Iterator<Person> iterator() {
+                return null;
+            }
+
+            @Override
+            public Object[] toArray() {
+                return new Object[0];
+            }
+
+            @Override
+            public <T> T[] toArray(T[] a) {
+                return null;
+            }
+
+            @Override
+            public boolean add(Person person) {
+                return false;
+            }
+
+            @Override
+            public boolean remove(Object o) {
+                return false;
+            }
+
+            @Override
+            public boolean containsAll(Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public boolean addAll(Collection<? extends Person> c) {
+                return false;
+            }
+
+            @Override
+            public boolean addAll(int index, Collection<? extends Person> c) {
+                return false;
+            }
+
+            @Override
+            public boolean removeAll(Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public boolean retainAll(Collection<?> c) {
+                return false;
+            }
+
+            @Override
+            public void clear() {
+
+            }
+
+            @Override
+            public Person get(int index) {
+                return null;
+            }
+
+            @Override
+            public Person set(int index, Person element) {
+                return null;
+            }
+
+            @Override
+            public void add(int index, Person element) {
+
+            }
+
+            @Override
+            public Person remove(int index) {
+                return null;
+            }
+
+            @Override
+            public int indexOf(Object o) {
+                return 0;
+            }
+
+            @Override
+            public int lastIndexOf(Object o) {
+                return 0;
+            }
+
+            @Override
+            public ListIterator<Person> listIterator() {
+                return null;
+            }
+
+            @Override
+            public ListIterator<Person> listIterator(int index) {
+                return null;
+            }
+
+            @Override
+            public List<Person> subList(int fromIndex, int toIndex) {
+                return null;
+            }
+
+            @Override
+            public void addListener(InvalidationListener listener) {
+
+            }
+
+            @Override
+            public void removeListener(InvalidationListener listener) {
+
+            }
+        };
+
+        table.setItems(kontakts);
+        TableColumn<Person,String> firstNameCol = new TableColumn<Person,String>("First Name");
+        firstNameCol.setCellValueFactory(new PropertyValueFactory("firstName"));
+        TableColumn<Person,String> lastNameCol = new TableColumn<Person,String>("Last Name");
+        lastNameCol.setCellValueFactory(new PropertyValueFactory("lastName"));
+        TableColumn<Person,String> emailaddyCol = new TableColumn<Person,String>("Email");
+        lastNameCol.setCellValueFactory(new PropertyValueFactory("emailaddy"));
+
+        table.getColumns().setAll(firstNameCol, lastNameCol, emailaddyCol);
+
+
+
+
         tabPane.getTabs().addAll(t,tt);
         tabPane.setPadding(new Insets(25,10,20,0));
 
@@ -649,7 +837,10 @@ for(String listentry55 : knt) {
 
 
 
-/*
+        editToggleButtonLabel  = new Label("Edit"); //only use label if rotate of button is needed
+        //editToggleButtonLabel.setRotate(-90);
+        editToggleButtonLabel.setStyle("-fx-text-fill: black");
+        editToggleButtonLabel.setPrefHeight(20);
 
         editToggleButton = new ToggleButton();
         editToggleButton.setGraphic(new Group(editToggleButtonLabel)); //group needed if in use with label and label rotated
@@ -657,21 +848,17 @@ for(String listentry55 : knt) {
 
         editToggleButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent arg0) {
-                webStack.getChildren().clear();
+
                 if (editToggleButton.isSelected()) {
 
-                    view.getEngine().loadContent(content);         //important!
-                    webStack.getChildren().addAll(editor);
-                    webStack.setStyle("-fx-border-color: #d8d8d8"); //important!
+                    HTMLEddy2Skin.hideEddyToolBar();
                 } else {
-                    view.getEngine().loadContent(editor.getHtmlText());
-                    webStack.getChildren().addAll(view);
-                    webStack.setStyle("-fx-border-color: #d8d8d8; -fx-border-style: solid hidden hidden hidden"); //important!!
+                    HTMLEddy2Skin.showEddyToolBar();
                 }
             }
         });
 
-        editToggleButton.fire();*/
+        editToggleButton.fire();
 
 
 
@@ -694,7 +881,7 @@ for(String listentry55 : knt) {
         );
 
         VBox sideMenuButtons = new VBox(5); //oben deklarieren?
-        sideMenuButtons.getChildren().addAll(sidebar.getControlButton(), newMailButton, attachButton);
+        sideMenuButtons.getChildren().addAll(sidebar.getControlButton(), newMailButton, editToggleButton, attachButton);
         sideMenuButtons.setPadding(new Insets(10, 5, 10, 5));
 
         return sideMenuButtons;
@@ -882,4 +1069,6 @@ for(String listentry55 : knt) {
             e.printStackTrace();
         }
     }
+
+
 }
