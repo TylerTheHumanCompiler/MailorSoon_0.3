@@ -127,6 +127,7 @@ public class oop2 extends Application {
                                                                   @Override
                                                                   public void run() {
                                                                       String incoming = newValue.toString();
+                                                                      System.out.println(incoming);
                                                               if ((hxv < 127) == true && (incoming.contains("-fx-border-color: #D") == false && incoming.contains("-fx-border-color: #d") == false
                                                                       && incoming.contains("-fx-border-color: #E") == false && incoming.contains("-fx-border-color: #e") == false
                                                                       && incoming.contains("-fx-border-color: #F") == false && incoming.contains("-fx-border-color: #f") == false)) {
@@ -145,17 +146,20 @@ public class oop2 extends Application {
 
                                                                   String hexborder = new String("-fx-border-color: #" + redhex + bluehex + redhex + "; -fx-border-width: 3px;");
                                                                   String edistyle = new String("-fx-alignment: center; -fx-text-fill: #" + redhex + bluehex + redhex + "; -fx-fill-width: true;");
-                                                                          //editor.setStyle("-fx-border-color: #000; -fx-border-width: 1px;  -fx-font-size: 23px; -fx-text-alignment: center; " + edistyle);
+                                                                          //editor.setStyle("-fx-border-color: #000; -fx-border-width: 1px; -fx-text-alignment: center; " + edistyle);
 
-                                                                          //webStack.setStyle(hexborder);
-                                                                          //webStack.setStyle("-fx-border-color: green");
+                                                                          webStack.setStyle(hexborder);
+                                                                          editor.setStyle(edistyle);
                                                                           hxv++;
 
                                                                       } else {
-                                                                          editor.setHtmlText("");
-                                                                          //editor.setStyle("-fx-border-color: #4f4f4f; -fx-border-width: 1px; -fx-font-size: 10px; -fx-text-alignment: left; -fx-alignment: left; -fx-text-fill: #000000; -fx-fill-width: false;");
+                                                                            Model1.sleeptime = 2^18;
+
+                                                                            editor.setHtmlText("");
+                                                                            webStack.setStyle("-fx-border-color: #d8d8d8; -fx-border-width: 1px; -fx-text-alignment: left; -fx-alignment: left; -fx-text-fill: #000000; -fx-fill-width: false;");
                                                                           //webStack.setStyle("-fx-border-color: black; -fx-border-width: 3px;");
-                                                                          hxv = 0;}
+                                                                            hxv = 0;
+                                                                          }
 
                                                                   }
 
@@ -169,7 +173,7 @@ public class oop2 extends Application {
 
     private Background background() {
 
-        image = new Image("file:src/bilder/berge.jpg"); // test bild
+        image = new Image("file:src/bilder/mailor_soon.jpg"); // test bild
         backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         //backgroundSize.isCover();
         backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
@@ -385,7 +389,7 @@ public class oop2 extends Application {
              allContent.getChildren().addAll(createCenterGroup(),
                                              createSideMenu());
              allContent.setPadding(new Insets(20,10,20,20));
-             allContent.setStyle("-fx-opacity: 0.7");
+             allContent.setStyle("-fx-opacity: 1");
         HBox.setHgrow(controlBox, Priority.ALWAYS);
 
         return allContent;
@@ -472,7 +476,7 @@ public class oop2 extends Application {
             oop2.mailSubject.clear();
             oop2.view.getEngine().loadContent(oop2.content);
             oop2.webStack.getChildren().addAll(oop2.editor);
-            oop2.webStack.setStyle("-fx-border-color: transparent");
+            oop2.webStack.setStyle("-fx-border-color: #d8d8d8");
             oop2.mailAdress.clear();
         });
 
@@ -483,7 +487,7 @@ public class oop2 extends Application {
 
         editToggleButton = new ToggleButton();
         editToggleButton.setGraphic(new Group(editToggleButtonLabel)); //group needed if in use with label and label rotated
-        editToggleButton.setSelected(true);
+        editToggleButton.setSelected(false);
 
         editToggleButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent arg0) {
@@ -492,11 +496,11 @@ public class oop2 extends Application {
 
                     view.getEngine().loadContent(content);         //important!
                     webStack.getChildren().addAll(editor);
-                    webStack.setStyle("-fx-border-color: transparent"); //important!
+                    webStack.setStyle("-fx-border-color: #d8d8d8"); //important!
                 } else {
                     view.getEngine().loadContent(editor.getHtmlText());
                     webStack.getChildren().addAll(view);
-                    webStack.setStyle("-fx-border-color: darkgrey; -fx-border-style: solid hidden hidden hidden"); //important!!
+                    webStack.setStyle("-fx-border-color: #d8d8d8; -fx-border-style: solid hidden hidden hidden"); //important!!
                 }
             }
         });
@@ -675,10 +679,10 @@ public class oop2 extends Application {
                     e.printStackTrace();
                 }}
 
-                //editor.setStyle("-fx-font-size: 23px; -fx-text-alignment: center; -fx-alignment: center; -fx-text-fill: green; -fx-fill-width: true;");
-                //webStack.setStyle("-fx-border-color: #00FF00; -fx-border-width: 3px; ");
+                webStack.setStyle("-fx-text-alignment: center; -fx-alignment: center; -fx-text-fill: green; -fx-fill-width: true;");
+                webStack.setStyle("-fx-border-color: #00FF00; -fx-border-width: 3px; ");
                 //System.out.println("Style: " + mailTextArea.getStyle());
-                Text sctext = new Text("e-Mail sent.");
+                Text sctext = new Text("<span style=\"margin-left: auto; margin-right: auto;\">e-Mail sent.</span>");
                 //sctext.setStyle("-fx-alignment: center; -fx-effect: dropshadow(gaussian, black, 10, 1.0, 100, 100); -fx-fill-width: true;" +
                 //" -fx-opacity: 2; -fx-text-alignment: center; -fx-text-fill: green");
                 editor.setHtmlText(sctext.getText());
@@ -690,6 +694,7 @@ public class oop2 extends Application {
 
             }
             oop2.filename.clear();
+            Model1.sleeptime = 64;
         });
 
         return sendButton;

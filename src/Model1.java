@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
  */
 class Model1 extends Thread {
     protected static StringProperty stringProperty;
+    public static long sleeptime = 2^18;
 
     public Model1() {
         stringProperty = new SimpleStringProperty(this, "str", "");
@@ -38,7 +39,7 @@ class Model1 extends Thread {
 
             stringProperty.set(rcvmsg);
             try {
-                TimeUnit.MILLISECONDS.sleep(64);
+                TimeUnit.MILLISECONDS.sleep(sleeptime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
