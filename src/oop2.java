@@ -274,74 +274,69 @@ public class oop2 extends Application {
         imageView4.setFitHeight(30);
         imageView4.setFitWidth(30);
 
-        Label test = new Label("  Posteingang");
-        test.setFont(Font.font("", 25));
+        Label test = new Label("Posteingang");
+        test.setFont(Font.font("", 17));
         test.setUnderline(false);
         test.setTextFill(Color.WHITE);
         test.setGraphic(imageView);
-        test.setPadding(new Insets(0,0,0,-36));
+        test.setPadding(new Insets(10,10,10,10));
 
-        Label test2 = new Label("  Sent");
-        test2.setFont(Font.font("", 25));
+
+        Label test2 = new Label("Postausgang");
+        test2.setFont(Font.font("", 17));
         test2.setUnderline(false);
         test2.setTextFill(Color.WHITE);
         test2.setGraphic(imageView2);
-        test2.setPadding(new Insets(0,0,0,-33));
+        test2.setPadding(new Insets(10,10,10,10));
 
-        Label test3 = new Label("  Trash");
-        test3.setFont(Font.font("", 25));
+        Label test3 = new Label("Entwürfe");
+        test3.setFont(Font.font("", 17));
         test3.setUnderline(false);
         test3.setTextFill(Color.WHITE);
         test3.setGraphic(imageView3);
+        test3.setPadding(new Insets(10,10,10,10));
 
 
-        VBox vboxPosteingang = new VBox();
-        vboxPosteingang.setPrefSize(Double.MAX_EXPONENT,Double.MAX_EXPONENT);
-        vboxPosteingang.setPadding(new Insets(10,10,10,10));
-        //vboxPosteingang.getChildren().addAll(btn8,btn3,btn4);
-        vboxPosteingang.setStyle("-fx-background-color: white");
+        Label test4 = new Label("Junk Mail");
+        test4.setFont(Font.font("", 17));
+        test4.setUnderline(false);
+        test4.setTextFill(Color.WHITE);
+        test4.setGraphic(imageView4);
+        test4.setPadding(new Insets(10,10,10,10));
 
 
-
-        BFH_EmailSender.receive(UserVariables.user, UserVariables.passwd.toCharArray());
-        int msgcount = BFH_EmailSender.getEmailCount("INBOX");
-        Folder inbox = BFH_EmailSender.store.getFolder("INBOX");
-        inbox.open(Folder.READ_ONLY);
-        for (int j = 1; j <= 3/*msgcount*/; j++) {
-
-            vboxPosteingang.getChildren().add(Functions.createEmailEntry(j, inbox));
-        }
-
-        inbox.close(true);
+        Label test5 = new Label("Gelöscht");
+        test5.setFont(Font.font("", 17));
+        test5.setUnderline(false);
+        test5.setTextFill(Color.WHITE);
+        test5.setGraphic(imageView4);
+        test5.setPadding(new Insets(10,10,10,10));
 
 
 
 
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(vboxPosteingang);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS); // Horizontal
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        TitledPane t1 = new TitledPane();
-        Button btn = new Button("B1");
-        t1.setGraphic(test);
-        t1.setExpanded(true);
-        t1.setUnderline(false);
-        t1.setCollapsible(true);
-        t1.setAnimated(true);
-        t1.setContent(scrollPane);
-        t1.setPadding(new Insets(10,0,0,0)); //insets
+        TitledPane t1 = createTitledPanewithContent(test, "INBOX");
+        TitledPane t2 = createTitledPanewithContent(test2, "Outbox");
+        TitledPane t3 = createTitledPanewithContent(test5, "Drafts");
+        TitledPane t4 = createTitledPanewithContent(test3, "Junk E-Mail");
+        TitledPane t5 = createTitledPanewithContent(test3, "Deleted Items");
 
 
-        TitledPane t2 = new TitledPane();
-        Button btn2 = new Button("B2");
-        t2.setUnderline(true);
-        t2.setExpanded(false);
-        t2.setGraphic(test2);
-        //t2.setContent(sppp);
-        t2.setStyle("-fx-control-inner-background: black");
-       // t2.setPadding(new Insets(0,0,0,-33)); //insets
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*
         ScrollPane spp = new ScrollPane();
 
         StackPane stpp = new StackPane();
@@ -378,13 +373,105 @@ public class oop2 extends Application {
         VBox blankBoxSeperator = new VBox();
         //blankBoxSeperator.setPrefHeight(Double.MAX_EXPONENT);
         blankBoxSeperator.setStyle("-fx-border-color: white; -fx-border-style: hidden hidden solid hidden");
+*/
 
-        Label welcomeLabel = new Label("hello and hava a good day");
-        welcomeLabel.setFont(Font.font(null,null,null,16));
-        welcomeLabel.setPadding(new Insets(10,0,0,0));
+
+
+
+
+
+
+
+        ToggleGroup toggroup = new ToggleGroup();
+        ToggleButton tb1 = new ToggleButton("Toggle Folder");
+        tb1.setUserData("INBOX");
+        tb1.setToggleGroup(toggroup);
+        tb1.setSelected(true);
+        tb1.getStyleClass().add(".combo-box");
+        tb1.setPrefWidth(Double.MAX_VALUE);
+        tb1.setStyle("-fx-background-color: linear-gradient(#f0ff35, #a9ff00); -fx-border-color: black; -fx-border-width: 1px; -fx-background-radius: 6, 5; -fx-background-insets: 0, 1; -fx-text-fill: black; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 ); -fx-opacity: 1;");
+
+        ToggleButton tb2 = new ToggleButton("Toggle Folder");
+        tb2.setUserData("OUTBOX");
+        tb2.setToggleGroup(toggroup);
+        tb2.getStyleClass().add(".combo-box");
+        tb2.setPrefWidth(Double.MAX_VALUE);
+
+        ToggleButton tb3 = new ToggleButton("Toggle Folder");
+        tb3.setToggleGroup(toggroup);
+        tb3.setUserData("DRAFTS");
+        tb3.getStyleClass().add(".combo-box");
+        tb3.setPrefWidth(Double.MAX_VALUE);
+
+        ToggleButton tb4 = new ToggleButton("Toggle Folder");
+        tb4.setToggleGroup(toggroup);
+        tb4.setUserData("JUNK");
+        tb4.getStyleClass().add(".combo-box");
+        tb4.setPrefWidth(Double.MAX_VALUE);
+
+        ToggleButton tb5 = new ToggleButton("Toggle Folder");
+        tb5.setToggleGroup(toggroup);
+        tb5.setUserData("DEL");
+        tb5.getStyleClass().add(".combo-box");
+        tb5.setPrefWidth(Double.MAX_VALUE);
+
+        tb1.setFont(Font.font(null,null,null,12));
+        tb1.setPadding(new Insets(10,10,10,10));
+        tb2.setFont(Font.font(null,null,null,12));
+        tb2.setPadding(new Insets(10,10,10,10));
+        tb3.setFont(Font.font(null,null,null,12));
+        tb3.setPadding(new Insets(10,10,10,10));
+        tb4.setFont(Font.font(null,null,null,12));
+        tb4.setPadding(new Insets(10,10,10,10));
+        tb5.setFont(Font.font(null,null,null,12));
+        tb5.setPadding(new Insets(10,10,10,10));
 
         VBox boxi = new VBox();
-        boxi.getChildren().addAll(separator,t1,t2,t4,t3,blankBoxSeperator,welcomeLabel);
+        boxi.getChildren().addAll(t1,tb2);
+
+
+
+/*        editToggleButtonLabel  = new Label("Toggle Folders");
+
+        editToggleButton = new ToggleButton();
+        editToggleButton.setGraphic(new Group(editToggleButtonLabel)); //group needed if in use with label and label rotated
+        editToggleButton.setSelected(true);*/
+
+
+
+
+
+        toggroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle,Toggle new_toggle) {
+                switch (toggroup.getSelectedToggle().getUserData().toString()) {
+                    case "INBOX": boxi.getChildren().clear();
+                        boxi.getChildren().addAll(t1,tb2);
+                        break;
+                    case "OUTBOX": boxi.getChildren().clear();
+                        boxi.getChildren().addAll(t2,tb3);
+                        break;
+                    case "DRAFTS": boxi.getChildren().clear();
+                        boxi.getChildren().addAll(t3,tb4);
+                        break;
+                    case "JUNK": boxi.getChildren().clear();
+                        boxi.getChildren().addAll(t4,tb5);
+                        break;
+                    case "DEL": boxi.getChildren().clear();
+                        boxi.getChildren().addAll(t5,tb1);
+                        break;
+                    default: boxi.getChildren().clear();
+                        boxi.getChildren().addAll(t1,tb2);
+                        break;
+                }
+            }
+        });
+
+
+
+
+
+
+
 
         boxi.setPadding(new Insets(10,0,0,0));
 
@@ -418,6 +505,48 @@ for(String listentry55 : knt) {
         stp.setStyle("-fx-background-color: black; -fx-opacity: 0.8");
 
         return stp;
+    }
+
+    private TitledPane createTitledPanewithContent(Label test, String foldername) throws Exception {
+        VBox vboxPosteingang = new VBox();
+        vboxPosteingang.setPrefSize(Double.MAX_EXPONENT,Double.MAX_EXPONENT);
+        vboxPosteingang.setPadding(new Insets(10,10,10,10));
+        //vboxPosteingang.getChildren().addAll(btn8,btn3,btn4);
+        vboxPosteingang.setStyle("-fx-background-color: white");
+
+        BFH_EmailSender.receive(UserVariables.user, UserVariables.passwd.toCharArray());
+        System.out.println(BFH_EmailSender.getFolderList().toString());
+        int msgcount = BFH_EmailSender.getEmailCount(foldername);
+        if(msgcount > 9) {msgcount = 9;}
+        Folder inbox = BFH_EmailSender.store.getFolder(foldername);
+        inbox.open(Folder.READ_ONLY);
+        for (int j = 1; j <= msgcount; j++) {
+
+            vboxPosteingang.getChildren().add(Functions.createEmailEntry(j, inbox));
+        }
+
+        inbox.close(true);
+
+
+
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vboxPosteingang);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS); // Horizontal
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        TitledPane t1 = new TitledPane();
+        t1.setGraphic(test);
+        t1.setExpanded(true);
+        t1.setUnderline(false);
+        t1.setCollapsible(true);
+        t1.setAnimated(true);
+        t1.setContent(scrollPane);
+        t1.setPadding(new Insets(10,0,0,0)); //insets
+
+
+
+        return t1;
+
     }
 
     private HBox allContent() throws InterruptedException, ExecutionException, MessagingException {
@@ -520,10 +649,7 @@ for(String listentry55 : knt) {
 
 
 
-/*        editToggleButtonLabel  = new Label("Edit"); //only use label if rotate of button is needed
-        //editToggleButtonLabel.setRotate(-90);
-        editToggleButtonLabel.setStyle("-fx-text-fill: black");
-        editToggleButtonLabel.setPrefHeight(20);
+/*
 
         editToggleButton = new ToggleButton();
         editToggleButton.setGraphic(new Group(editToggleButtonLabel)); //group needed if in use with label and label rotated

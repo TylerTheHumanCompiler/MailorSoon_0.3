@@ -4,8 +4,11 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -264,9 +267,10 @@ public class Functions extends Thread {
         Message msg = BFH_EmailSender.getEmail(i, inbox);
         Address[] adis = msg.getFrom();
         String addresstr = new String();
+        if(inbox.getFullName().matches("Drafts") == false) {
         for (Address address : adis) {
             addresstr += address.toString();
-        }
+        }}
         String recipient = addresstr.toString();
         //System.out.println(recipient);
         int ltIndex = recipient.indexOf('<');
@@ -297,11 +301,12 @@ public class Functions extends Thread {
 
         daterec.prefWidth(194);
 
-        senfld.setStyle("-fx-font-family: fantasy; -fx-font-size: 12; -fx-border-style: hidden;");
+        senfld.setStyle("-fx-font-family: fantasy; -fx-font-size: 12; -fx-border-style: hidden; -fx-font-weight: bold;");
         senfld.setText(sendername);
         senfld.setAlignment(Pos.CENTER_LEFT);
         senfld.setPrefWidth(127);
         senfld.setMaxWidth(127);
+        senfld.setMaxHeight(13);
 
         final String finalSenderaddress = senderaddress;
         senfld.setCursor(Cursor.HAND);
@@ -325,6 +330,7 @@ public class Functions extends Thread {
         subfld.setAlignment(Pos.CENTER_LEFT);
         subfld.setPrefWidth(561);
         subfld.setMaxWidth(561);
+        subfld.setMaxHeight(13);
         subfld.setCursor(Cursor.HAND);
         subfld.setOnMouseClicked(event -> {
                 oop2.webStack.getChildren().clear();
@@ -380,15 +386,29 @@ public class Functions extends Thread {
         msgbox1.getChildren().addAll(senfld);
         msgbox1.setMaxWidth(133);
         msgbox1.setPrefWidth(133);
+        msgbox1.setMaxHeight(13);
         msgbox1.setPadding(new Insets(0,3,0,3));
 
 
         msgbox2.getChildren().addAll(subfld);
         msgbox2.setMaxWidth(567);
         msgbox2.setPrefWidth(567);
+        msgbox2.setMaxHeight(23);
         msgbox2.setPadding(new Insets(0,3,0,3));
 
+        HBox hoxbox = new HBox();
+        Image icon = new Image("file:src/bilder/sent4.png");
+        ImageView imageView = new ImageView(icon);
+        imageView.setFitHeight(29);
+        imageView.setFitWidth(29);
 
+        hoxbox.getChildren().addAll(imageView);
+        hoxbox.setPadding(new Insets(7,0,0,7));
+        VBox boxxy = new VBox();
+
+
+boxxy.setSpacing(-7);
+        boxxy.getChildren().addAll(msgbox1, msgbox2);
 
 
 
@@ -400,10 +420,10 @@ public class Functions extends Thread {
 
 
         HBox msgbox = new HBox();
-        msgbox.getChildren().addAll(msgbox1, msgbox2, msgbox3);
+        msgbox.getChildren().addAll(hoxbox, boxxy, msgbox3);
         msgbox.setHgrow(msgbox1, Priority.NEVER);
-        msgbox.setPrefWidth(900);
-        msgbox.setMaxWidth(900);
+        msgbox.setPrefWidth(800);
+        msgbox.setMaxWidth(800);
         msgbox.setStyle("-fx-control-inner-background: white; -fx-text-fill: black; -fx-border-color: #e0e0e0; -fx-border-width: 0.5px;");
 
 
