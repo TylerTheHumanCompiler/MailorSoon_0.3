@@ -840,21 +840,7 @@ public class oop2 extends Application {
 
 
         Button attachButton = new Button();
-        final FileChooser fileChooser = new FileChooser();
-        final Stage stage = new Stage();
 
-
-        attachButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent arg0) {
-                List<File> list =
-                        fileChooser.showOpenMultipleDialog(stage);
-                if (list != null) {
-                    for (File file : list) {
-
-                        filename.add(file.getAbsolutePath());
-                        System.out.print("file: " + file.getAbsolutePath());
-                    }}}    }
-        );
 
         VBox sideMenuButtons = new VBox(5); //oben deklarieren?
         sideMenuButtons.getChildren().addAll(sidebar.getControlButton(), newMailButton, editToggleButton, attachButton);
@@ -978,23 +964,48 @@ public class oop2 extends Application {
         Image attachmentImage = new Image("file:src/bilder/attach2.png"); //soll man diese oben als private deklarieren?
         ImagePattern imagePattern = new ImagePattern(attachmentImage,0, 0, 1, 1, true);
 
-        Rectangle attachmentIcon = new Rectangle(30,30);
-                  attachmentIcon.setFill(imagePattern);
+        Rectangle attachmentIcon2 = new Rectangle(30,30);
+                  attachmentIcon2.setFill(imagePattern);
+        final FileChooser fileChooser = new FileChooser();
+        final Stage stage = new Stage();
 
-        attachmentIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+
+        attachmentIcon2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+
             @Override
             public void handle(MouseEvent event) {
-                attachmentBox.getChildren().addAll(attachmentIcon());
+                List<File> list =
+                        fileChooser.showOpenMultipleDialog(stage);
+                if (list != null) {
+                    for (File file : list) {
+
+                        filename.add(file.getAbsolutePath());
+
+                        attachmentIcon2.setUserData(file.getAbsolutePath());
+                        attachmentBox.getChildren().addAll(attachmentIcon(file.getAbsolutePath()));
+                        System.out.print("file: " + file.getAbsolutePath());
+                    }}
+
                 System.out.println("rectangle hie!!!!!!!!!!");
             }
-            private Button attachmentIcon(){
+            private Button attachmentIcon(String abpath){
                 Button attachmentIcon = new Button();
-                attachmentIcon.setOnAction(event -> attachmentBox.getChildren().remove(attachmentIcon));
+                attachmentIcon.setOnAction(event -> {
+
+
+                    int remin = filename.indexOf(abpath);
+                    System.out.print("INDEX :" + remin);
+                    filename.remove(remin);
+                    attachmentBox.getChildren().remove(attachmentIcon);}
+                );
                 return attachmentIcon;
             }
-        });
 
-        return attachmentIcon;
+
+        });
+        return attachmentIcon2;
     }
 
 
@@ -1101,6 +1112,7 @@ public class oop2 extends Application {
 
             }
             oop2.filename.clear();
+            attachmentBox.getChildren().clear();
             Model1.sleeptime = 64;
         });
 
