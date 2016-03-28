@@ -83,6 +83,7 @@ public class oop2 extends Application {
 
         primaryStage.initStyle(StageStyle.UNIFIED); //
 
+
         //Sidebar...
         sidebar = new SideBar(250,10,createSidebarContent()); // als eigene Methode??
         //sidebar.setStyle("-fx-background-color: red");
@@ -173,7 +174,7 @@ public class oop2 extends Application {
 
     private Background background() {
 
-        image = new Image("file:src/bilder/mailor_soon.jpg"); // test bild
+        image = new Image("file:src/bilder/berge.jpg"); // test bild
         backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         //backgroundSize.isCover();
         backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
