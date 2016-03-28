@@ -35,6 +35,9 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -70,6 +73,7 @@ public class oop2 extends Application {
     private Background background;
     public static Scene scene;
     public static List<String> filename = new ArrayList<>();
+    public static List<String> knt = new ArrayList<>();
 
     /**
      * @param args the command line arguments
@@ -82,6 +86,30 @@ public class oop2 extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         primaryStage.initStyle(StageStyle.UNIFIED); //
+        Statement statement = Userdata.conSQL();
+        List<String> varlist = new ArrayList<>();
+        varlist.add("integer");
+        varlist.add("string");
+        varlist.add("string");
+        List<String> valname = new ArrayList<>();
+        valname.add("id");
+        valname.add("name");
+        valname.add("email");
+        Userdata.createSQLTable(statement, "contacts", varlist, valname);
+        String[] strarray = new String[2];
+        strarray[0] = "Tyler the human Compiler";
+        strarray[1] = "mc.twist@hotmail.com";
+        Userdata.addEntry(statement, "contacts", strarray);
+        strarray[0] = "Taylor Swift";
+        strarray[1] = "swift-heil@4ever-taylor.com";
+        Userdata.addEntry(statement, "contacts", strarray);
+        strarray[0] = "Phbips \"the Phitler\" Bader";
+        strarray[1] = "phil.bad@gmx.ch";
+        Userdata.addEntry(statement, "contacts", strarray);
+
+
+        knt = Userdata.getResults(statement);
+
 
 
         //Sidebar...
@@ -367,6 +395,14 @@ public class oop2 extends Application {
         t.setContent(boxi);
         Tab tt = new Tab("Kontakte");
         tt.setClosable(false);
+        VBox kntkt = new VBox();
+for(String listentry55 : knt) {
+        TextField tx2 = new TextField();
+        tx2.setText(listentry55);
+        kntkt.getChildren().add(tx2);}
+        ScrollPane sckont = new ScrollPane();
+        sckont.setContent(kntkt);
+        tt.setContent(sckont);
 
         tabPane.getTabs().addAll(t,tt);
         tabPane.setPadding(new Insets(25,10,20,0));

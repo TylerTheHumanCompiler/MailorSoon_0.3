@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,10 +18,9 @@ public static Statement conSQL() throws ClassNotFoundException, SQLException {
         // if the error message is "out of memory",
         // it probably means no database file is found
         System.err.println(e.getMessage());}
-    finally {try {if(connection != null) connection.close();}
-        catch(SQLException e) {System.err.println(e);}}
+    finally {/*if(connection != null) connection.close();*/}
     Statement statement = connection.createStatement();
-    statement.setQueryTimeout(30);  // set timeout to 30 sec.
+    //statement.setQueryTimeout(30);  // set timeout to 30 sec.
     return statement;
 }
 
@@ -32,22 +32,27 @@ public static void createSQLTable(Statement statement, String tablename, List<St
     String sqlquerystr = new String(" (");
     int vls = valname.size();
     for(int i = 0; i < vls; i++) {
-        sqlquerystr += varlist.get(i) + " " + valname.get(i) + ", ";}
-    statement.executeUpdate("create table " + tablename + sqlquerystr + ")");
+        sqlquerystr += valname.get(i) + " " + varlist.get(i) + ", ";}
+String sqlqrystr2 = sqlquerystr.substring(0, sqlquerystr.length() - 2) + ')' + "";
+    System.out.println("SQLQRY2: " + sqlqrystr2);
+    statement.executeUpdate("create table " + tablename + sqlqrystr2);
 }
 
 
 
 
 
- public static ResultSet getResults(Statement statement) throws SQLException {
+ public static List<String> getResults(Statement statement) throws SQLException {
         ResultSet rs = statement.executeQuery("select * from contacts");
+        List<String> newl = new ArrayList<>();
         while(rs.next())
-        {   // read the result set
-            System.out.println("name = " + rs.getString("name"));
-            System.out.println("id = " + rs.getInt("id"));
-        }
-     return rs;
+            {   // read the result set
+                newl.add(rs.getString("name"));
+                System.out.println("name = " + rs.getString("name"));
+                //.add(rs.getString("email"));
+                System.out.println("id = " + rs.getInt("id"));
+            }
+        return newl;
     }
 
 
@@ -55,13 +60,14 @@ public static void createSQLTable(Statement statement, String tablename, List<St
 
 
 public static void addEntry(Statement statement, String tablename, String[] strarray) throws SQLException {
-    statement.executeUpdate("insert into contacts values(1, 'Tyler the human Compiler', 'mc.twist@hotmail.com')");
-    statement.executeUpdate("insert into contacts values(2, 'Phbips \"the Phitler\" Bader', 'phil.bad@gmx.ch')");
-    statement.executeUpdate("insert into contacts values(3, 'Taylor Swift', 'taylor@swift-heil.com')");
+//    statement.executeUpdate("insert into contacts values(1, 'Tyler the human Compiler', 'mc.twist@hotmail.com')");
+  //  statement.executeUpdate("insert into contacts values(2, 'Phbips \"the Phitler\" Bader', 'phil.bad@gmx.ch')");
+    //statement.executeUpdate("insert into contacts values(3, 'Taylor Swift', 'taylor@swift-heil.com')");
     int mxr = statement.getMaxRows() + 1;
     String sqlquerystr = new String();
     for(String value : strarray) {sqlquerystr +=  "\'" + value + "\', ";}
-    statement.executeUpdate("insert into " + tablename + " values(" + mxr + ", " + sqlquerystr + ")");
+    String sqlqrystr2 = sqlquerystr.substring(0, sqlquerystr.length()-2);
+    statement.executeUpdate("insert into " + tablename + " values(" + mxr + ", " + sqlqrystr2 + ')' + "");
 }
 
 
