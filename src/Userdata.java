@@ -52,7 +52,7 @@ String sqlqrystr2 = sqlquerystr.substring(0, sqlquerystr.length() - 2) + ')' + "
             {   // read the result set
                 newl.add(rs.getString("name"));
                 System.out.println("name = " + rs.getString("name"));
-                //.add(rs.getString("email"));
+                newl.add(rs.getString("email"));
                 System.out.println("id = " + rs.getInt("id"));
             }
         return newl;
@@ -79,28 +79,3 @@ public static void addEntry(Statement statement, String tablename, String[] stra
 }
 
 
-class Person {
-    private StringProperty firstName;
-    public void setFirstName(String value) { firstNameProperty().set(value); }
-    public String getFirstName() { return firstNameProperty().get(); }
-    public StringProperty firstNameProperty() {
-        if (firstName == null) firstName = new SimpleStringProperty(this, "firstName");
-        return firstName;
-    }
-
-    private StringProperty lastName;
-    public void setLastName(String value) { lastNameProperty().set(value); }
-    public String getLastName() { return lastNameProperty().get(); }
-    public StringProperty lastNameProperty() {
-        if (lastName == null) lastName = new SimpleStringProperty(this, "lastName");
-        return lastName;
-    }
-
-    private StringProperty emailaddy;
-    public void setLastEmail(String value) { emailProperty().set(value); }
-    public String getLastEmail() { return lastNameProperty().get(); }
-    public StringProperty emailProperty() {
-        if (emailaddy == null) emailaddy = new SimpleStringProperty(this, "emailaddy");
-        return lastName;
-    }
-}

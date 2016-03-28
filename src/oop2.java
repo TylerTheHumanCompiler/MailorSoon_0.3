@@ -5,11 +5,14 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -23,10 +26,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -44,11 +51,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.awt.SystemColor.desktop;
+import static org.apache.commons.lang3.StringEscapeUtils.escapeJava;
 
 
 /**
@@ -59,18 +68,18 @@ public class oop2 extends Application {
 
     public static TextArea mailTextArea;
     private Button sendButton, colorButton, newMailButton;
-    public static TextField mailAdress, mailSubject;
+    public static TextField mailAdress, mailSubject, ccAdress, bccAdress;
     private SideBar sidebar;
     public int hxv = 0;
     public static StackPane webStack;
     public static HTMLEddy2 editor;
     protected static WebView view;
-    private VBox controlBox,headerVBox;
-    private HBox headerBox;
+    private VBox controlBox,headerVBox, ccAdressBox;
+    private HBox headerBox, attachmentBox;
     protected static String content;
     private VBox buttonBox;
     private Label editToggleButtonLabel, getNewMailButtonLabel,getLabelToggleButton;
-    private ToggleButton editToggleButton;
+    private ToggleButton editToggleButton, ccButton;
     private Image image;
     private BackgroundSize backgroundSize;
     private BackgroundImage backgroundImage;
@@ -117,7 +126,7 @@ public class oop2 extends Application {
 
 
         //Sidebar...
-        sidebar = new SideBar(250,10,createSidebarContent()); // als eigene Methode??
+        sidebar = new SideBar(400,10,createSidebarContent2()); // als eigene Methode??
         //sidebar.setStyle("-fx-background-color: red");
         //sidebar.getChildren().addAll(background);
         //sidebar.setMaxSize(600, 400);
@@ -136,7 +145,7 @@ public class oop2 extends Application {
                   root.getChildren().addAll(borderPane);
 
         scene = new Scene(root, 1000, 600);
-              scene.getStylesheets().add(oop2.class.getResource("styling2.css").toExternalForm());
+        scene.getStylesheets().add(oop2.class.getResource("styling2.css").toExternalForm());
 
         primaryStage.setTitle("");
         primaryStage.setScene(scene);
@@ -215,7 +224,142 @@ public class oop2 extends Application {
         return background;
     }
 
-    private StackPane createSidebarContent() throws Exception {
+    private StackPane createSidebarContent2() throws Exception{
+
+        StackPane sidebarAllContent = new StackPane();
+        sidebarAllContent.getChildren().addAll(tabPane());
+        sidebarAllContent.setPadding(new Insets(0,0,0,10));
+
+        sidebarAllContent.setStyle("-fx-background-color: black; -fx-opacity: 0.8");
+
+        return sidebarAllContent;
+    }
+
+    private TabPane tabPane() throws Exception {
+
+        TabPane tabPane = new TabPane();
+
+        tabPane.getTabs().addAll(postfach(),contacts());
+        tabPane.setPadding(new Insets(25,10,20,0));
+
+        return tabPane;
+    }
+
+    private Tab postfach() throws Exception {
+
+        Separator separator = new Separator();
+        separator.setValignment(VPos.CENTER);
+        separator.setPrefWidth(Double.MAX_EXPONENT);
+
+        VBox blankBoxSeperator = new VBox();
+        //blankBoxSeperator.setPrefHeight(Double.MAX_EXPONENT);
+        blankBoxSeperator.setStyle("-fx-border-color: white; -fx-border-style: hidden hidden solid hidden");
+
+        Label welcomeLabel = new Label("hello and hava a good day");
+        welcomeLabel.setFont(Font.font(null,null,null,16));
+        welcomeLabel.setPadding(new Insets(10,0,0,0));
+
+        TitledPane t1 = createTitledPanewithContent(titledPaneLabel("Postfach", "inbox.png"), "INBOX");
+        t1.setExpanded(true);
+        TitledPane t2 = createTitledPanewithContent(titledPaneLabel("Postausgang", "sent4.png"), "Sent Items");
+        TitledPane t3 = createTitledPanewithContent(titledPaneLabel("Drafts", "draft.png"), "Drafts");
+        TitledPane t4 = createTitledPanewithContent(titledPaneLabel("Junk E-Mail","testJunk2.png"), "Junk E-Mail");
+        TitledPane t5 = createTitledPanewithContent(titledPaneLabel("Trash", "trash.png"), "Deleted Items");
+
+        VBox postfachContent = new VBox();
+        postfachContent.getChildren().addAll(separator,t1,t2,t3,t4,t5,blankBoxSeperator,welcomeLabel);
+        postfachContent.setPadding(new Insets(10,0,0,0));
+
+        Tab postfachTab = new Tab("Postfach");
+        postfachTab.setClosable(false);
+        postfachTab.setContent(postfachContent);
+
+        return postfachTab;
+    }
+
+    private Label titledPaneLabel(String string, String filepath) {
+
+        Image icon = new Image("file:src/bilder/" + filepath);
+        ImageView imageView = new ImageView(icon);
+        imageView.setFitHeight(30);
+        imageView.setFitWidth(30);
+
+        Label test = new Label(string);
+        test.setFont(Font.font(null,null,null,16));
+        test.setUnderline(false);
+        test.setTextFill(Color.WHITE);
+        test.setGraphic(imageView);
+        test.setPadding(new Insets(0,0,0,-36));
+        return test;
+    }
+
+
+    private Tab contacts() {
+
+        TableView<Person> table = new TableView<Person>();
+
+
+
+
+
+        TableColumn<Person,String> firstNameCol = new TableColumn<Person,String>("Vorname");
+        firstNameCol.setCellValueFactory(new PropertyValueFactory("firstName"));
+        TableColumn<Person,String> lastNameCol = new TableColumn<Person,String>("Nachname");
+        lastNameCol.setCellValueFactory(new PropertyValueFactory("lastName"));
+        TableColumn<Person,String> emailaddyCol = new TableColumn<Person,String>("E-Mail");
+        emailaddyCol.setCellValueFactory(new PropertyValueFactory("emailaddy"));
+        table.getColumns().setAll(firstNameCol, lastNameCol, emailaddyCol);
+
+
+        ObservableList<Person> kontakts = FXCollections.observableArrayList(
+
+        );
+
+        int ks = knt.size();
+        String listentry55;
+        for(int i = 0; i < ks; i = i + 2) {
+            listentry55 = knt.get(i);
+            System.out.println(listentry55);
+            int tt34 = listentry55.indexOf(" ");
+
+            Person p1 = new Person();
+            p1.setFirstName(listentry55.substring(0, tt34));
+            p1.setLastName(listentry55.substring(tt34 + 1));
+
+            listentry55 = knt.get(i + 1);
+            System.out.println(listentry55);
+            p1.setEmailaddy(listentry55);
+            kontakts.add(p1);
+
+        }
+        table.setItems(kontakts);
+
+
+        table.setRowFactory( tv -> {
+            TableRow<Person> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    Person rowData = row.getItem();
+                    oop2.webStack.getChildren().clear();
+                    oop2.mailSubject.clear();
+                    oop2.view.getEngine().loadContent(oop2.content);
+                    oop2.webStack.getChildren().addAll(oop2.editor);
+                    oop2.webStack.setStyle("-fx-border-color: transparent");
+                    oop2.mailAdress.setText("\"" + rowData.getFirstName() + rowData.getLastName() + "\" <" + rowData.getEmailaddy() + ">");
+                }
+            });
+            return row;
+        });
+
+
+        Tab contactsTab = new Tab("Kontakte");
+        contactsTab.setClosable(false);
+        contactsTab.setContent(table);
+
+        return contactsTab;
+    }
+
+   /* private StackPane createSidebarContent() throws Exception {
         // create some content to put in the sidebar.
 
         Button btn4 = new Button();
@@ -278,69 +422,67 @@ public class oop2 extends Application {
         imageView4.setFitHeight(30);
         imageView4.setFitWidth(30);
 
-        Label test = new Label("Posteingang");
-        test.setFont(Font.font("", 17));
+        Label test = new Label("  Posteingang");
+        test.setFont(Font.font("", 25));
         test.setUnderline(false);
         test.setTextFill(Color.WHITE);
         test.setGraphic(imageView);
-        test.setPadding(new Insets(10,10,10,10));
+        test.setPadding(new Insets(0,0,0,-36));
 
-
-        Label test2 = new Label("Postausgang");
-        test2.setFont(Font.font("", 17));
+        Label test2 = new Label("  Sent");
+        test2.setFont(Font.font("", 25));
         test2.setUnderline(false);
         test2.setTextFill(Color.WHITE);
         test2.setGraphic(imageView2);
-        test2.setPadding(new Insets(10,10,10,10));
+        test2.setPadding(new Insets(0,0,0,-33));
 
-        Label test3 = new Label("Entwürfe");
-        test3.setFont(Font.font("", 17));
+        Label test3 = new Label("  Trash");
+        test3.setFont(Font.font("", 25));
         test3.setUnderline(false);
         test3.setTextFill(Color.WHITE);
         test3.setGraphic(imageView3);
-        test3.setPadding(new Insets(10,10,10,10));
+        //test3.setPadding(new Insets(10,10,10,10));
 
 
-        Label test4 = new Label("Junk Mail");
-        test4.setFont(Font.font("", 17));
-        test4.setUnderline(false);
-        test4.setTextFill(Color.WHITE);
-        test4.setGraphic(imageView4);
-        test4.setPadding(new Insets(10,10,10,10));
+        VBox vboxPosteingang = new VBox();
+        vboxPosteingang.setPrefSize(Double.MAX_EXPONENT,Double.MAX_EXPONENT);
+        vboxPosteingang.setPadding(new Insets(10,10,10,10));
+        vboxPosteingang.getChildren().addAll(btn8,btn3,btn4);
+        vboxPosteingang.setStyle("-fx-background-color: black");
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vboxPosteingang);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Horizontal
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+   /*     TitledPane t1 = new TitledPane();
+        t1.setGraphic(test);
+        t1.setExpanded(true);
+        t1.setUnderline(false);
+        t1.setCollapsible(true);
+        t1.setAnimated(true);
+        t1.setContent(scrollPane);
+        t1.setPadding(new Insets(10,0,0,0)); //insets
 
+*/
+   /*     TitledPane t2 = new TitledPane();
+        Button btn2 = new Button("B2");
+        t2.setUnderline(true);
+        t2.setExpanded(false);
+        t2.setGraphic(test2);
+        //t2.setContent(sppp);
+        t2.setStyle("-fx-control-inner-background: black");
+       // t2.setPadding(new Insets(0,0,0,-33)); //insets
+*/
 
-        Label test5 = new Label("Gelöscht");
-        test5.setFont(Font.font("", 17));
-        test5.setUnderline(false);
-        test5.setTextFill(Color.WHITE);
-        test5.setGraphic(imageView4);
-        test5.setPadding(new Insets(10,10,10,10));
-
-
-
+/*
 
         TitledPane t1 = createTitledPanewithContent(test, "INBOX");
         TitledPane t2 = createTitledPanewithContent(test2, "Outbox");
-        TitledPane t3 = createTitledPanewithContent(test5, "Drafts");
+       // TitledPane t3 = createTitledPanewithContent(test5, "Drafts");
         TitledPane t4 = createTitledPanewithContent(test3, "Junk E-Mail");
         TitledPane t5 = createTitledPanewithContent(test3, "Deleted Items");
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
         ScrollPane spp = new ScrollPane();
 
         StackPane stpp = new StackPane();
@@ -353,12 +495,12 @@ public class oop2 extends Application {
 
 
         Label junkLabel = new Label("  Junk E-Mail");
-        TitledPane t4 = new TitledPane();
+       /* TitledPane t4 = new TitledPane();
         t4.setText("  Junk E-Mail");
         t4.setGraphic(imageView4);
         t4.setContent(sppp);
         t4.setPadding(new Insets(0,0,0,-35)); //insets
-
+*/ /*
         TitledPane t3 = new TitledPane();
         t3.setText("  Trash");
         t3.setGraphic(imageView3);
@@ -377,9 +519,9 @@ public class oop2 extends Application {
         VBox blankBoxSeperator = new VBox();
         //blankBoxSeperator.setPrefHeight(Double.MAX_EXPONENT);
         blankBoxSeperator.setStyle("-fx-border-color: white; -fx-border-style: hidden hidden solid hidden");
-*/
 
 
+/^
 
 
 
@@ -435,11 +577,13 @@ public class oop2 extends Application {
 
 
 
+*/
 /*        editToggleButtonLabel  = new Label("Toggle Folders");
 
         editToggleButton = new ToggleButton();
         editToggleButton.setGraphic(new Group(editToggleButtonLabel)); //group needed if in use with label and label rotated
-        editToggleButton.setSelected(true);*/
+        editToggleButton.setSelected(true);*//*
+
 
 
 
@@ -473,10 +617,11 @@ public class oop2 extends Application {
 
 
 
+*/
 
 
 
-
+/*
         boxi.setPadding(new Insets(10,0,0,0));
 
         TabPane tabPane = new TabPane();
@@ -487,205 +632,29 @@ public class oop2 extends Application {
         Tab tt = new Tab("Kontakte");
         tt.setClosable(false);
         VBox kntkt = new VBox();
-for(String listentry55 : knt) {
-        TextField tx2 = new TextField();
-        tx2.setText(listentry55);
-        kntkt.getChildren().add(tx2);}
+
+
+
+
+
+
+
+
+
         ScrollPane sckont = new ScrollPane();
-        sckont.setContent(kntkt);
+        sckont.setContent(table);
         tt.setContent(sckont);
-
-
-        TableView<Person> table = new TableView<Person>();
-
-
-        ObservableList<Person> kontakts = new ObservableList<Person>() {
-            @Override
-            public void addListener(ListChangeListener<? super Person> listener) {
-
-            }
-
-            @Override
-            public void removeListener(ListChangeListener<? super Person> listener) {
-
-            }
-
-            @Override
-            public boolean addAll(Person... elements) {
-                return false;
-            }
-
-            @Override
-            public boolean setAll(Person... elements) {
-                return false;
-            }
-
-            @Override
-            public boolean setAll(Collection<? extends Person> col) {
-                return false;
-            }
-
-            @Override
-            public boolean removeAll(Person... elements) {
-                return false;
-            }
-
-            @Override
-            public boolean retainAll(Person... elements) {
-                return false;
-            }
-
-            @Override
-            public void remove(int from, int to) {
-
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @Override
-            public boolean contains(Object o) {
-                return false;
-            }
-
-            @Override
-            public Iterator<Person> iterator() {
-                return null;
-            }
-
-            @Override
-            public Object[] toArray() {
-                return new Object[0];
-            }
-
-            @Override
-            public <T> T[] toArray(T[] a) {
-                return null;
-            }
-
-            @Override
-            public boolean add(Person person) {
-                return false;
-            }
-
-            @Override
-            public boolean remove(Object o) {
-                return false;
-            }
-
-            @Override
-            public boolean containsAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(Collection<? extends Person> c) {
-                return false;
-            }
-
-            @Override
-            public boolean addAll(int index, Collection<? extends Person> c) {
-                return false;
-            }
-
-            @Override
-            public boolean removeAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public boolean retainAll(Collection<?> c) {
-                return false;
-            }
-
-            @Override
-            public void clear() {
-
-            }
-
-            @Override
-            public Person get(int index) {
-                return null;
-            }
-
-            @Override
-            public Person set(int index, Person element) {
-                return null;
-            }
-
-            @Override
-            public void add(int index, Person element) {
-
-            }
-
-            @Override
-            public Person remove(int index) {
-                return null;
-            }
-
-            @Override
-            public int indexOf(Object o) {
-                return 0;
-            }
-
-            @Override
-            public int lastIndexOf(Object o) {
-                return 0;
-            }
-
-            @Override
-            public ListIterator<Person> listIterator() {
-                return null;
-            }
-
-            @Override
-            public ListIterator<Person> listIterator(int index) {
-                return null;
-            }
-
-            @Override
-            public List<Person> subList(int fromIndex, int toIndex) {
-                return null;
-            }
-
-            @Override
-            public void addListener(InvalidationListener listener) {
-
-            }
-
-            @Override
-            public void removeListener(InvalidationListener listener) {
-
-            }
-        };
-
-        table.setItems(kontakts);
-        TableColumn<Person,String> firstNameCol = new TableColumn<Person,String>("First Name");
-        firstNameCol.setCellValueFactory(new PropertyValueFactory("firstName"));
-        TableColumn<Person,String> lastNameCol = new TableColumn<Person,String>("Last Name");
-        lastNameCol.setCellValueFactory(new PropertyValueFactory("lastName"));
-        TableColumn<Person,String> emailaddyCol = new TableColumn<Person,String>("Email");
-        lastNameCol.setCellValueFactory(new PropertyValueFactory("emailaddy"));
-
-        table.getColumns().setAll(firstNameCol, lastNameCol, emailaddyCol);
-
 
 
 
         tabPane.getTabs().addAll(t,tt);
-        tabPane.setPadding(new Insets(25,10,20,0));
+        tabPane.setPadding(new Insets(25,10,20,0));*/
 
         //double tabWidth = tabPane.getWidth() / tabPane.getTabs().size();
         //tabPane.setTabMinWidth(tabWidth);
         //tabPane.setTabMaxWidth(tabWidth);
 
+/*
         StackPane stp = new StackPane();
         stp.getChildren().addAll(tabPane);
         stp.setPadding(new Insets(0,0,0,10));
@@ -694,6 +663,7 @@ for(String listentry55 : knt) {
 
         return stp;
     }
+*/
 
     private TitledPane createTitledPanewithContent(Label test, String foldername) throws Exception {
         VBox vboxPosteingang = new VBox();
@@ -709,22 +679,16 @@ for(String listentry55 : knt) {
         Folder inbox = BFH_EmailSender.store.getFolder(foldername);
         inbox.open(Folder.READ_ONLY);
         for (int j = 1; j <= msgcount; j++) {
-
             vboxPosteingang.getChildren().add(Functions.createEmailEntry(j, inbox));
         }
-
         inbox.close(true);
-
-
-
-
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(vboxPosteingang);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS); // Horizontal
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         TitledPane t1 = new TitledPane();
         t1.setGraphic(test);
-        t1.setExpanded(true);
+        t1.setExpanded(false);
         t1.setUnderline(false);
         t1.setCollapsible(true);
         t1.setAnimated(true);
@@ -751,7 +715,7 @@ for(String listentry55 : knt) {
 
     private VBox createCenterGroup() throws MessagingException, ExecutionException, InterruptedException {
 
-        controlBox = new VBox(8, createHeaderBox(),
+        controlBox = new VBox(8, createHeaderBox(),attachmentBox(),
                                  createStackPaneHtmlTextArea());
 
         ///controlBox.setStyle("-fx-background-color: rgba(255, 255, 255, 0); -fx-border-color: black"); // test
@@ -762,6 +726,13 @@ for(String listentry55 : knt) {
         HBox.setHgrow(headerBox,Priority.ALWAYS);
 
         return controlBox;
+    }
+
+    private HBox attachmentBox() {
+
+        attachmentBox = new HBox(10);
+
+        return attachmentBox;
     }
 
     private StackPane createStackPaneHtmlTextArea() throws InterruptedException, ExecutionException, MessagingException {
@@ -818,6 +789,11 @@ for(String listentry55 : knt) {
         ImageView newMailImageView = new ImageView(newMailImage);
                   newMailImageView.setFitWidth(20);
                   newMailImageView.setFitHeight(20);
+
+        Image editImage = new Image("file:src/bilder/browser-stars.png",20,20,true,true); // oben deklarieren?
+        ImageView editImageView = new ImageView(editImage);
+        //editImageView.setFitWidth(40);
+        //editImageView.setFitHeight(40);
 
         Tooltip newMailTooltip = new Tooltip("New Mail");
         //hackTooltipStartTiming(newMailTooltip);
@@ -896,7 +872,6 @@ for(String listentry55 : knt) {
         mailTextArea.setStyle("-fx-control-inner-background: white; -fx-text-fill: black; -fx-border-color: #e0e0e0; -fx-border-width: 0px;"); //set as ID with styling.css!
         //mailTextArea.requestFocus();
         mailTextArea.getStyleClass().add("vbox");
-
         return mailTextArea;
     }
 
@@ -924,10 +899,22 @@ for(String listentry55 : knt) {
         mailSubject.setPrefWidth(Double.MAX_EXPONENT);
 
         headerVBox = new VBox(2);
-        headerVBox.getChildren().addAll(mailAdress, mailSubject);
+        headerVBox.getChildren().addAll(mailAdress,ccAdressBox(),mailSubject);
         //headerVBox.setStyle("-fx-opacity: 0.7");
 
         return headerVBox;
+    }
+
+    private VBox ccAdressBox() {
+
+        ccAdress = new TextField();
+        ccAdress.setPromptText("Type cc-adress");
+        bccAdress = new TextField();
+        bccAdress.setPromptText("Type bcc-adress");
+
+        ccAdressBox = new VBox();
+
+        return ccAdressBox;
     }
 
     private HBox createHeaderBox() throws MessagingException, ExecutionException, InterruptedException {
@@ -944,25 +931,86 @@ for(String listentry55 : knt) {
 
     private VBox createButtonBox() throws InterruptedException, ExecutionException, MessagingException {
 
-        buttonBox = new VBox();
-        buttonBox.getChildren().addAll(createSendButton());
+        buttonBox = new VBox(10);
+        buttonBox.getChildren().addAll(createSendButton(),ccAdressAndAttachButtonBox());
         buttonBox.setPadding(new Insets(5,0,0,0));
 
         return buttonBox;
     }
 
+    private HBox ccAdressAndAttachButtonBox() {
+
+        HBox saveAndAttachBox = new HBox(-5);
+             saveAndAttachBox.getChildren().addAll(ccBccButton(),attachmentButton());
+             saveAndAttachBox.setPadding(new Insets(0,0,0,0));
+        return saveAndAttachBox;
+    }
+
+    private ToggleButton ccBccButton() {
+
+        Image saveImage = new Image("file:src/bilder/cc.png"); //soll man diese oben als private deklarieren?
+        ImagePattern imagePattern = new ImagePattern(saveImage,0, 0, 1, 1, true);
+
+        Rectangle ccIcon = new Rectangle(20,20);
+                  ccIcon.setFill(imagePattern);
+
+        ccButton = new ToggleButton();
+        ccButton.setGraphic(ccIcon);
+        ccButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent");
+
+        ccButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent arg0) {
+                //webStack.getChildren().clear();
+                if (ccButton.isSelected()) {
+                    ccAdressBox.getChildren().addAll(ccAdress,bccAdress);
+                } else {
+                    ccAdressBox.getChildren().removeAll(ccAdress,bccAdress);
+                }
+            }
+        });
+
+        return ccButton;
+
+    }
+
+    private Rectangle attachmentButton() {
+
+        Image attachmentImage = new Image("file:src/bilder/attach2.png"); //soll man diese oben als private deklarieren?
+        ImagePattern imagePattern = new ImagePattern(attachmentImage,0, 0, 1, 1, true);
+
+        Rectangle attachmentIcon = new Rectangle(30,30);
+                  attachmentIcon.setFill(imagePattern);
+
+        attachmentIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                attachmentBox.getChildren().addAll(attachmentIcon());
+                System.out.println("rectangle hie!!!!!!!!!!");
+            }
+            private Button attachmentIcon(){
+                Button attachmentIcon = new Button();
+                attachmentIcon.setOnAction(event -> attachmentBox.getChildren().remove(attachmentIcon));
+                return attachmentIcon;
+            }
+        });
+
+        return attachmentIcon;
+    }
+
 
     private Button createColorButton() throws MessagingException, ExecutionException, InterruptedException {
 
-        Image rainbow = new Image("file:src/bilder/rainbow.png"); //soll man diese oben als private deklarieren?
+        Image rainbow = new Image("file:src/bilder/rainbow.jpg"); //soll man diese oben als private deklarieren?
         ImageView imageView = new ImageView(rainbow);
         imageView.setFitHeight(20);
         imageView.setFitWidth(72);
 
+        Label rainbowLabel = new Label("Rainbow Hex"); // oben deklarieren?
+
         colorButton = new Button();
         //colorButton.setText("Rainbow Hex!");
         //colorButton.setStyle("-fx-text-fill: black");
-        colorButton.setGraphic(imageView);
+        colorButton.setGraphic(new Group(imageView,rainbowLabel));
 
         colorButton.setOnAction(event -> {
             int len = editor.getHtmlText().length();
@@ -988,7 +1036,13 @@ for(String listentry55 : knt) {
         return colorButton;
     }
 
-    private Button createSendButton() throws MessagingException, ExecutionException, InterruptedException {
+    private Rectangle createSendButton() throws MessagingException, ExecutionException, InterruptedException {
+
+        Image sendImage = new Image("file:src/bilder/send2.png"); //soll man diese oben als private deklarieren?
+        ImagePattern imagePattern = new ImagePattern(sendImage,0, 0, 1, 1, true);
+
+        Rectangle sendIcon = new Rectangle(50,35);
+        sendIcon.setFill(imagePattern);
 
         sendButton = new Button();
         sendButton.setText("Send");
@@ -1001,7 +1055,7 @@ for(String listentry55 : knt) {
         hackTooltipStartTiming(tooltip);
         sendButton.setTooltip(tooltip);
 
-        sendButton.setOnAction(event -> {
+        sendIcon.setOnMouseClicked(event -> {
             String emailaddress = oop2.mailAdress.getText() + " ";
             List<String> addresslist = new ArrayList<>();
 
@@ -1050,7 +1104,7 @@ for(String listentry55 : knt) {
             Model1.sleeptime = 64;
         });
 
-        return sendButton;
+        return sendIcon;
     }
 
     public static void hackTooltipStartTiming(Tooltip tooltip) { //needed? yes eventually for the +(new mail) icon!

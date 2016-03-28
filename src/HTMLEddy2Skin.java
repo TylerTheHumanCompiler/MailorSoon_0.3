@@ -95,7 +95,7 @@ public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior
     private ColorPicker fgColorButton;
     private ColorPicker bgColorButton;
 
-    private WebView webView;
+    private static WebView webView;
     private WebPage webPage;
 
     private static final String CUT_COMMAND = "cut";
@@ -206,15 +206,22 @@ public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior
     };
 
     public static void hideEddyToolBar() {
+        gridPane.setStyle("-fx-border-style: solid hidden hidden hidden; -fx-border-width: 1px; -fx-border-color: black;");
+        int wvi = gridPane.getChildren().indexOf(webView);
+        Node wv2 = gridPane.getChildren().get(wvi);
+        gridPane.getChildren().remove(wvi);
         objectchildren = gridPane.getChildren().toArray();
         gridPane.getChildren().clear();
+        gridPane.getChildren().addAll(wv2);
 
     }
 
     public static void showEddyToolBar() {
+
         for(Object obj : objectchildren) {
             Node node = ((Node) obj);
             gridPane.getChildren().addAll(node);
+            gridPane.setStyle("-fx-border-style: hidden hidden hidden hidden;");
         }
     }
 
@@ -237,6 +244,7 @@ public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior
 //        populateToolbars();
 
         webView = new WebView();
+
         gridPane.add(webView, 0, 2);
 
         ColumnConstraints column = new ColumnConstraints();

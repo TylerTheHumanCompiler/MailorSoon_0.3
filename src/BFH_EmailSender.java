@@ -57,7 +57,7 @@ public class BFH_EmailSender {
       Session session = Session.getInstance(properties, authenticator);
 
       // Create a default MimeMessage object.
-      MimeMessage message = new MimeMessage(session);
+      Message message = new MimeMessage(session);
 
       // Set the RFC 822 "From" header field using the
       // value of the InternetAddress.getLocalAddress method.
@@ -69,6 +69,16 @@ public class BFH_EmailSender {
       // Set the "To" header field.
       message.setRecipient(javax.mail.Message.RecipientType.TO,
             new InternetAddress(recipient));
+
+      if(oop2.ccAdress.getText().isEmpty() == false) {
+        message = setXtraRecipients("CC", message);
+      }
+
+      if(oop2.bccAdress.getText().isEmpty() == false) {
+         message = setXtraRecipients("BCC", message);
+      }
+
+
        // byte[] bytechar = oop2.editor.getHtmlText().getBytes(Charset.forName("utf-8"));
       //  System.out.println(new String(bytechar, Charset.forName("utf-8")));
       //  String escutf = new String(bytechar, Charset.forName("utf-8"));
@@ -185,7 +195,19 @@ return msg;
         return folderlist;
     }
 
-
+    public static Message setXtraRecipients(String ccorbcc, Message message) throws MessagingException {
+        if(ccorbcc.matches("CC") == true) {
+            message.addRecipient(MimeMessage.RecipientType.CC, new InternetAddress(
+                    oop2.ccAdress.getText()));
+            return message;
+        }
+        if(ccorbcc.matches("BCC") == true) {
+            message.addRecipient(MimeMessage.RecipientType.BCC, new InternetAddress(
+                    oop2.bccAdress.getText()));
+            return message;
+        }
+        return message;
+    }
 
 
 
