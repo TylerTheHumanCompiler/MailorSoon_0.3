@@ -120,7 +120,7 @@ public class oop2 extends Application {
 
 
         //Sidebar...
-        sidebar = new SideBar(400,10,createSidebarContent()); // als eigene Methode??
+        sidebar = new SideBar(400,10,createSidebarContent2()); // als eigene Methode??
         //sidebar.setStyle("-fx-background-color: red");
         //sidebar.getChildren().addAll(background);
         //sidebar.setMaxSize(600, 400);
@@ -218,7 +218,84 @@ public class oop2 extends Application {
         return background;
     }
 
-    private StackPane createSidebarContent() throws Exception {
+    private StackPane createSidebarContent2() throws Exception{
+
+        StackPane sidebarAllContent = new StackPane();
+        sidebarAllContent.getChildren().addAll(tabPane());
+        sidebarAllContent.setPadding(new Insets(0,0,0,10));
+
+        sidebarAllContent.setStyle("-fx-background-color: black; -fx-opacity: 0.8");
+
+        return sidebarAllContent;
+    }
+
+    private TabPane tabPane() throws Exception {
+
+        TabPane tabPane = new TabPane();
+
+        tabPane.getTabs().addAll(postfach(),contacts());
+        tabPane.setPadding(new Insets(25,10,20,0));
+
+        return tabPane;
+    }
+
+    private Tab postfach() throws Exception {
+
+        Separator separator = new Separator();
+        separator.setValignment(VPos.CENTER);
+        separator.setPrefWidth(Double.MAX_EXPONENT);
+
+        VBox blankBoxSeperator = new VBox();
+        //blankBoxSeperator.setPrefHeight(Double.MAX_EXPONENT);
+        blankBoxSeperator.setStyle("-fx-border-color: white; -fx-border-style: hidden hidden solid hidden");
+
+        Label welcomeLabel = new Label("hello and hava a good day");
+        welcomeLabel.setFont(Font.font(null,null,null,16));
+        welcomeLabel.setPadding(new Insets(10,0,0,0));
+
+        TitledPane t1 = createTitledPanewithContent(titledPaneLabel("Postfach", "inbox.png"), "INBOX");
+        TitledPane t2 = createTitledPanewithContent(titledPaneLabel("Postausgang", "sent4.png"), "Sent Items");
+        TitledPane t3 = createTitledPanewithContent(titledPaneLabel("Drafts", "draft.png"), "Drafts");
+        TitledPane t4 = createTitledPanewithContent(titledPaneLabel("Junk E-Mail","testJunk2.png"), "Junk E-Mail");
+        TitledPane t5 = createTitledPanewithContent(titledPaneLabel("Trash", "trash.png"), "Deleted Items");
+
+        VBox postfachContent = new VBox();
+        postfachContent.getChildren().addAll(separator,t1,t2,t3,t4,t5,blankBoxSeperator,welcomeLabel);
+        postfachContent.setPadding(new Insets(10,0,0,0));
+
+        Tab postfachTab = new Tab("Postfach");
+        postfachTab.setClosable(false);
+        postfachTab.setContent(postfachContent);
+
+        return postfachTab;
+    }
+
+    private Label titledPaneLabel(String string, String filepath) {
+
+        Image icon = new Image("file:src/bilder/" + filepath);
+        ImageView imageView = new ImageView(icon);
+        imageView.setFitHeight(30);
+        imageView.setFitWidth(30);
+
+        Label test = new Label(string);
+        test.setFont(Font.font(null,null,null,16));
+        test.setUnderline(false);
+        test.setTextFill(Color.WHITE);
+        test.setGraphic(imageView);
+        test.setPadding(new Insets(0,0,0,-36));
+        return test;
+    }
+
+
+    private Tab contacts() {
+
+        Tab contactsTab = new Tab("Kontakte");
+        contactsTab.setClosable(false);
+
+        return contactsTab;
+    }
+
+   /* private StackPane createSidebarContent() throws Exception {
         // create some content to put in the sidebar.
 
         Button btn4 = new Button();
@@ -322,7 +399,7 @@ public class oop2 extends Application {
         t1.setPadding(new Insets(10,0,0,0)); //insets
 
 */
-        TitledPane t2 = new TitledPane();
+   /*     TitledPane t2 = new TitledPane();
         Button btn2 = new Button("B2");
         t2.setUnderline(true);
         t2.setExpanded(false);
@@ -330,16 +407,16 @@ public class oop2 extends Application {
         //t2.setContent(sppp);
         t2.setStyle("-fx-control-inner-background: black");
        // t2.setPadding(new Insets(0,0,0,-33)); //insets
+*/
 
-
-
+/*
 
         TitledPane t1 = createTitledPanewithContent(test, "INBOX");
-  /*      TitledPane t2 = createTitledPanewithContent(test2, "Outbox");
-        TitledPane t3 = createTitledPanewithContent(test5, "Drafts");
+        TitledPane t2 = createTitledPanewithContent(test2, "Outbox");
+       // TitledPane t3 = createTitledPanewithContent(test5, "Drafts");
         TitledPane t4 = createTitledPanewithContent(test3, "Junk E-Mail");
         TitledPane t5 = createTitledPanewithContent(test3, "Deleted Items");
-  */
+
 
 
         ScrollPane spp = new ScrollPane();
@@ -354,12 +431,12 @@ public class oop2 extends Application {
 
 
         Label junkLabel = new Label("  Junk E-Mail");
-        TitledPane t4 = new TitledPane();
+       /* TitledPane t4 = new TitledPane();
         t4.setText("  Junk E-Mail");
         t4.setGraphic(imageView4);
         t4.setContent(sppp);
         t4.setPadding(new Insets(0,0,0,-35)); //insets
-
+*/ /*
         TitledPane t3 = new TitledPane();
         t3.setText("  Trash");
         t3.setGraphic(imageView3);
@@ -603,9 +680,10 @@ for(String listentry55 : knt) {
         stp.setStyle("-fx-background-color: black; -fx-opacity: 0.8");
 
         return stp;
-    }
+    } */
 
     private TitledPane createTitledPanewithContent(Label test, String foldername) throws Exception {
+
         VBox vboxPosteingang = new VBox();
         vboxPosteingang.setPrefSize(Double.MAX_EXPONENT,Double.MAX_EXPONENT);
         vboxPosteingang.setPadding(new Insets(10,10,10,10));
@@ -624,9 +702,6 @@ for(String listentry55 : knt) {
         }
 
         inbox.close(true);
-
-
-
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(vboxPosteingang);
@@ -879,13 +954,13 @@ for(String listentry55 : knt) {
     private VBox createButtonBox() throws InterruptedException, ExecutionException, MessagingException {
 
         buttonBox = new VBox(10);
-        buttonBox.getChildren().addAll(createSendButton(),saveAndAttachButtonBox());
+        buttonBox.getChildren().addAll(createSendButton(),ccAdressAndAttachButtonBox());
         buttonBox.setPadding(new Insets(5,0,0,0));
 
         return buttonBox;
     }
 
-    private HBox saveAndAttachButtonBox() {
+    private HBox ccAdressAndAttachButtonBox() {
 
         HBox saveAndAttachBox = new HBox(-5);
              saveAndAttachBox.getChildren().addAll(ccBccButton(),attachmentButton());

@@ -410,12 +410,11 @@ public class Functions extends Thread {
 boxxy.setSpacing(-7);
         boxxy.getChildren().addAll(msgbox1, msgbox2);
 
-
-
         //daterec.setFont(Font.font(font, fsize));
         msgbox3.getChildren().addAll(datfld);
         msgbox3.setMaxWidth(200);
-        msgbox3.setPrefWidth(200);        msgbox3.setAlignment(Pos.CENTER_RIGHT);
+        msgbox3.setPrefWidth(200);
+        msgbox3.setAlignment(Pos.CENTER_RIGHT);
         msgbox3.setPadding(new Insets(0,3,0,3));
 
 
