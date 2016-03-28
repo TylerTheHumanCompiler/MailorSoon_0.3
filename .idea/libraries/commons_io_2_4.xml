@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="commons-io-2.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../commons-lang3-3.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../javax.mail.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../sqlite-jdbc-3.8.11.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../sqlite-jdbc-3.8.11.2.jar!/" />
+    </SOURCES>
+  </library>
+</component>

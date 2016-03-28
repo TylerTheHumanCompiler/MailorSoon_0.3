@@ -10,6 +10,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -23,10 +25,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -39,16 +45,13 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.sql.Array;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.awt.SystemColor.desktop;
 
 
 /**
@@ -59,18 +62,18 @@ public class oop2 extends Application {
 
     public static TextArea mailTextArea;
     private Button sendButton, colorButton, newMailButton;
-    public static TextField mailAdress, mailSubject;
+    public static TextField mailAdress, mailSubject, ccAdress, bccAdress;
     private SideBar sidebar;
     public int hxv = 0;
     public static StackPane webStack;
     public static HTMLEddy2 editor;
     protected static WebView view;
-    private VBox controlBox,headerVBox;
-    private HBox headerBox;
+    private VBox controlBox,headerVBox, ccAdressBox;
+    private HBox headerBox, attachmentBox;
     protected static String content;
     private VBox buttonBox;
     private Label editToggleButtonLabel, getNewMailButtonLabel,getLabelToggleButton;
-    private ToggleButton editToggleButton;
+    private ToggleButton editToggleButton, ccButton;
     private Image image;
     private BackgroundSize backgroundSize;
     private BackgroundImage backgroundImage;
@@ -117,7 +120,7 @@ public class oop2 extends Application {
 
 
         //Sidebar...
-        sidebar = new SideBar(250,10,createSidebarContent()); // als eigene Methode??
+        sidebar = new SideBar(400,10,createSidebarContent()); // als eigene Methode??
         //sidebar.setStyle("-fx-background-color: red");
         //sidebar.getChildren().addAll(background);
         //sidebar.setMaxSize(600, 400);
@@ -136,7 +139,7 @@ public class oop2 extends Application {
                   root.getChildren().addAll(borderPane);
 
         scene = new Scene(root, 1000, 600);
-              scene.getStylesheets().add(oop2.class.getResource("styling2.css").toExternalForm());
+        scene.getStylesheets().add(oop2.class.getResource("styling3.css").toExternalForm());
 
         primaryStage.setTitle("");
         primaryStage.setScene(scene);
@@ -206,7 +209,7 @@ public class oop2 extends Application {
 
     private Background background() {
 
-        image = new Image("file:src/bilder/epicsmiley.gif"); // test bild
+        image = new Image("file:src/bilder/berge.jpg"); // test bild
         backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         //backgroundSize.isCover();
         backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
@@ -278,69 +281,67 @@ public class oop2 extends Application {
         imageView4.setFitHeight(30);
         imageView4.setFitWidth(30);
 
-        Label test = new Label("Posteingang");
-        test.setFont(Font.font("", 17));
+        Label test = new Label("  Posteingang");
+        test.setFont(Font.font("", 25));
         test.setUnderline(false);
         test.setTextFill(Color.WHITE);
         test.setGraphic(imageView);
-        test.setPadding(new Insets(10,10,10,10));
+        test.setPadding(new Insets(0,0,0,-36));
 
-
-        Label test2 = new Label("Postausgang");
-        test2.setFont(Font.font("", 17));
+        Label test2 = new Label("  Sent");
+        test2.setFont(Font.font("", 25));
         test2.setUnderline(false);
         test2.setTextFill(Color.WHITE);
         test2.setGraphic(imageView2);
-        test2.setPadding(new Insets(10,10,10,10));
+        test2.setPadding(new Insets(0,0,0,-33));
 
-        Label test3 = new Label("Entwürfe");
-        test3.setFont(Font.font("", 17));
+        Label test3 = new Label("  Trash");
+        test3.setFont(Font.font("", 25));
         test3.setUnderline(false);
         test3.setTextFill(Color.WHITE);
         test3.setGraphic(imageView3);
-        test3.setPadding(new Insets(10,10,10,10));
+        //test3.setPadding(new Insets(10,10,10,10));
 
 
-        Label test4 = new Label("Junk Mail");
-        test4.setFont(Font.font("", 17));
-        test4.setUnderline(false);
-        test4.setTextFill(Color.WHITE);
-        test4.setGraphic(imageView4);
-        test4.setPadding(new Insets(10,10,10,10));
+        VBox vboxPosteingang = new VBox();
+        vboxPosteingang.setPrefSize(Double.MAX_EXPONENT,Double.MAX_EXPONENT);
+        vboxPosteingang.setPadding(new Insets(10,10,10,10));
+        vboxPosteingang.getChildren().addAll(btn8,btn3,btn4);
+        vboxPosteingang.setStyle("-fx-background-color: black");
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(vboxPosteingang);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER); // Horizontal
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+   /*     TitledPane t1 = new TitledPane();
+        t1.setGraphic(test);
+        t1.setExpanded(true);
+        t1.setUnderline(false);
+        t1.setCollapsible(true);
+        t1.setAnimated(true);
+        t1.setContent(scrollPane);
+        t1.setPadding(new Insets(10,0,0,0)); //insets
 
-
-        Label test5 = new Label("Gelöscht");
-        test5.setFont(Font.font("", 17));
-        test5.setUnderline(false);
-        test5.setTextFill(Color.WHITE);
-        test5.setGraphic(imageView4);
-        test5.setPadding(new Insets(10,10,10,10));
+*/
+        TitledPane t2 = new TitledPane();
+        Button btn2 = new Button("B2");
+        t2.setUnderline(true);
+        t2.setExpanded(false);
+        t2.setGraphic(test2);
+        //t2.setContent(sppp);
+        t2.setStyle("-fx-control-inner-background: black");
+       // t2.setPadding(new Insets(0,0,0,-33)); //insets
 
 
 
 
         TitledPane t1 = createTitledPanewithContent(test, "INBOX");
-        TitledPane t2 = createTitledPanewithContent(test2, "Outbox");
+  /*      TitledPane t2 = createTitledPanewithContent(test2, "Outbox");
         TitledPane t3 = createTitledPanewithContent(test5, "Drafts");
         TitledPane t4 = createTitledPanewithContent(test3, "Junk E-Mail");
         TitledPane t5 = createTitledPanewithContent(test3, "Deleted Items");
+  */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
         ScrollPane spp = new ScrollPane();
 
         StackPane stpp = new StackPane();
@@ -377,105 +378,14 @@ public class oop2 extends Application {
         VBox blankBoxSeperator = new VBox();
         //blankBoxSeperator.setPrefHeight(Double.MAX_EXPONENT);
         blankBoxSeperator.setStyle("-fx-border-color: white; -fx-border-style: hidden hidden solid hidden");
-*/
 
 
-
-
-
-
-
-
-        ToggleGroup toggroup = new ToggleGroup();
-        ToggleButton tb1 = new ToggleButton("Toggle Folder");
-        tb1.setUserData("INBOX");
-        tb1.setToggleGroup(toggroup);
-        tb1.setSelected(true);
-        tb1.getStyleClass().add(".combo-box");
-        tb1.setPrefWidth(Double.MAX_VALUE);
-        tb1.setStyle("-fx-background-color: linear-gradient(#f0ff35, #a9ff00); -fx-border-color: black; -fx-border-width: 1px; -fx-background-radius: 6, 5; -fx-background-insets: 0, 1; -fx-text-fill: black; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 ); -fx-opacity: 1;");
-
-        ToggleButton tb2 = new ToggleButton("Toggle Folder");
-        tb2.setUserData("OUTBOX");
-        tb2.setToggleGroup(toggroup);
-        tb2.getStyleClass().add(".combo-box");
-        tb2.setPrefWidth(Double.MAX_VALUE);
-
-        ToggleButton tb3 = new ToggleButton("Toggle Folder");
-        tb3.setToggleGroup(toggroup);
-        tb3.setUserData("DRAFTS");
-        tb3.getStyleClass().add(".combo-box");
-        tb3.setPrefWidth(Double.MAX_VALUE);
-
-        ToggleButton tb4 = new ToggleButton("Toggle Folder");
-        tb4.setToggleGroup(toggroup);
-        tb4.setUserData("JUNK");
-        tb4.getStyleClass().add(".combo-box");
-        tb4.setPrefWidth(Double.MAX_VALUE);
-
-        ToggleButton tb5 = new ToggleButton("Toggle Folder");
-        tb5.setToggleGroup(toggroup);
-        tb5.setUserData("DEL");
-        tb5.getStyleClass().add(".combo-box");
-        tb5.setPrefWidth(Double.MAX_VALUE);
-
-        tb1.setFont(Font.font(null,null,null,12));
-        tb1.setPadding(new Insets(10,10,10,10));
-        tb2.setFont(Font.font(null,null,null,12));
-        tb2.setPadding(new Insets(10,10,10,10));
-        tb3.setFont(Font.font(null,null,null,12));
-        tb3.setPadding(new Insets(10,10,10,10));
-        tb4.setFont(Font.font(null,null,null,12));
-        tb4.setPadding(new Insets(10,10,10,10));
-        tb5.setFont(Font.font(null,null,null,12));
-        tb5.setPadding(new Insets(10,10,10,10));
+        Label welcomeLabel = new Label("hello and hava a good day");
+        welcomeLabel.setFont(Font.font(null,null,null,16));
+        welcomeLabel.setPadding(new Insets(10,0,0,0));
 
         VBox boxi = new VBox();
-        boxi.getChildren().addAll(t1,tb2);
-
-
-
-/*        editToggleButtonLabel  = new Label("Toggle Folders");
-
-        editToggleButton = new ToggleButton();
-        editToggleButton.setGraphic(new Group(editToggleButtonLabel)); //group needed if in use with label and label rotated
-        editToggleButton.setSelected(true);*/
-
-
-
-
-
-        toggroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            public void changed(ObservableValue<? extends Toggle> ov, Toggle toggle,Toggle new_toggle) {
-                switch (toggroup.getSelectedToggle().getUserData().toString()) {
-                    case "INBOX": boxi.getChildren().clear();
-                        boxi.getChildren().addAll(t1,tb2);
-                        break;
-                    case "OUTBOX": boxi.getChildren().clear();
-                        boxi.getChildren().addAll(t2,tb3);
-                        break;
-                    case "DRAFTS": boxi.getChildren().clear();
-                        boxi.getChildren().addAll(t3,tb4);
-                        break;
-                    case "JUNK": boxi.getChildren().clear();
-                        boxi.getChildren().addAll(t4,tb5);
-                        break;
-                    case "DEL": boxi.getChildren().clear();
-                        boxi.getChildren().addAll(t5,tb1);
-                        break;
-                    default: boxi.getChildren().clear();
-                        boxi.getChildren().addAll(t1,tb2);
-                        break;
-                }
-            }
-        });
-
-
-
-
-
-
-
+        boxi.getChildren().addAll(separator,t1,t2,t4,t3,blankBoxSeperator,welcomeLabel);
 
         boxi.setPadding(new Insets(10,0,0,0));
 
@@ -743,7 +653,7 @@ for(String listentry55 : knt) {
              allContent.getChildren().addAll(createCenterGroup(),
                                              createSideMenu());
              allContent.setPadding(new Insets(20,10,20,20));
-             allContent.setStyle("-fx-opacity: 1");
+             allContent.setStyle("-fx-opacity: 0.7");
         HBox.setHgrow(controlBox, Priority.ALWAYS);
 
         return allContent;
@@ -751,7 +661,7 @@ for(String listentry55 : knt) {
 
     private VBox createCenterGroup() throws MessagingException, ExecutionException, InterruptedException {
 
-        controlBox = new VBox(8, createHeaderBox(),
+        controlBox = new VBox(8, createHeaderBox(),attachmentBox(),
                                  createStackPaneHtmlTextArea());
 
         ///controlBox.setStyle("-fx-background-color: rgba(255, 255, 255, 0); -fx-border-color: black"); // test
@@ -762,6 +672,13 @@ for(String listentry55 : knt) {
         HBox.setHgrow(headerBox,Priority.ALWAYS);
 
         return controlBox;
+    }
+
+    private HBox attachmentBox() {
+
+        attachmentBox = new HBox(10);
+
+        return attachmentBox;
     }
 
     private StackPane createStackPaneHtmlTextArea() throws InterruptedException, ExecutionException, MessagingException {
@@ -819,6 +736,11 @@ for(String listentry55 : knt) {
                   newMailImageView.setFitWidth(20);
                   newMailImageView.setFitHeight(20);
 
+        Image editImage = new Image("file:src/bilder/browser-stars.png",20,20,true,true); // oben deklarieren?
+        ImageView editImageView = new ImageView(editImage);
+        //editImageView.setFitWidth(40);
+        //editImageView.setFitHeight(40);
+
         Tooltip newMailTooltip = new Tooltip("New Mail");
         //hackTooltipStartTiming(newMailTooltip);
 
@@ -843,7 +765,7 @@ for(String listentry55 : knt) {
         editToggleButtonLabel.setPrefHeight(20);
 
         editToggleButton = new ToggleButton();
-        editToggleButton.setGraphic(new Group(editToggleButtonLabel)); //group needed if in use with label and label rotated
+        editToggleButton.setGraphic(new Group(editImageView)); //group needed if in use with label and label rotated
         editToggleButton.setSelected(false);
 
         editToggleButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -924,10 +846,22 @@ for(String listentry55 : knt) {
         mailSubject.setPrefWidth(Double.MAX_EXPONENT);
 
         headerVBox = new VBox(2);
-        headerVBox.getChildren().addAll(mailAdress, mailSubject);
+        headerVBox.getChildren().addAll(mailAdress,ccAdressBox(),mailSubject);
         //headerVBox.setStyle("-fx-opacity: 0.7");
 
         return headerVBox;
+    }
+
+    private VBox ccAdressBox() {
+
+        ccAdress = new TextField();
+        ccAdress.setPromptText("Type cc-adress");
+        bccAdress = new TextField();
+        bccAdress.setPromptText("Type bcc-adress");
+
+        ccAdressBox = new VBox();
+
+        return ccAdressBox;
     }
 
     private HBox createHeaderBox() throws MessagingException, ExecutionException, InterruptedException {
@@ -944,25 +878,86 @@ for(String listentry55 : knt) {
 
     private VBox createButtonBox() throws InterruptedException, ExecutionException, MessagingException {
 
-        buttonBox = new VBox();
-        buttonBox.getChildren().addAll(createSendButton());
+        buttonBox = new VBox(10);
+        buttonBox.getChildren().addAll(createSendButton(),saveAndAttachButtonBox());
         buttonBox.setPadding(new Insets(5,0,0,0));
 
         return buttonBox;
     }
 
+    private HBox saveAndAttachButtonBox() {
+
+        HBox saveAndAttachBox = new HBox(-5);
+             saveAndAttachBox.getChildren().addAll(ccBccButton(),attachmentButton());
+             saveAndAttachBox.setPadding(new Insets(0,0,0,0));
+        return saveAndAttachBox;
+    }
+
+    private ToggleButton ccBccButton() {
+
+        Image saveImage = new Image("file:src/bilder/cc.png"); //soll man diese oben als private deklarieren?
+        ImagePattern imagePattern = new ImagePattern(saveImage,0, 0, 1, 1, true);
+
+        Rectangle ccIcon = new Rectangle(20,20);
+                  ccIcon.setFill(imagePattern);
+
+        ccButton = new ToggleButton();
+        ccButton.setGraphic(ccIcon);
+        ccButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent");
+
+        ccButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent arg0) {
+                //webStack.getChildren().clear();
+                if (ccButton.isSelected()) {
+                    ccAdressBox.getChildren().addAll(ccAdress,bccAdress);
+                } else {
+                    ccAdressBox.getChildren().removeAll(ccAdress,bccAdress);
+                }
+            }
+        });
+
+        return ccButton;
+
+    }
+
+    private Rectangle attachmentButton() {
+
+        Image attachmentImage = new Image("file:src/bilder/attach2.png"); //soll man diese oben als private deklarieren?
+        ImagePattern imagePattern = new ImagePattern(attachmentImage,0, 0, 1, 1, true);
+
+        Rectangle attachmentIcon = new Rectangle(30,30);
+                  attachmentIcon.setFill(imagePattern);
+
+        attachmentIcon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                attachmentBox.getChildren().addAll(attachmentIcon());
+                System.out.println("rectangle hie!!!!!!!!!!");
+            }
+            private Button attachmentIcon(){
+                Button attachmentIcon = new Button();
+                attachmentIcon.setOnAction(event -> attachmentBox.getChildren().remove(attachmentIcon));
+                return attachmentIcon;
+            }
+        });
+
+        return attachmentIcon;
+    }
+
 
     private Button createColorButton() throws MessagingException, ExecutionException, InterruptedException {
 
-        Image rainbow = new Image("file:src/bilder/rainbow.png"); //soll man diese oben als private deklarieren?
+        Image rainbow = new Image("file:src/bilder/rainbow.jpg"); //soll man diese oben als private deklarieren?
         ImageView imageView = new ImageView(rainbow);
         imageView.setFitHeight(20);
         imageView.setFitWidth(72);
 
+        Label rainbowLabel = new Label("Rainbow Hex"); // oben deklarieren?
+
         colorButton = new Button();
         //colorButton.setText("Rainbow Hex!");
         //colorButton.setStyle("-fx-text-fill: black");
-        colorButton.setGraphic(imageView);
+        colorButton.setGraphic(new Group(imageView,rainbowLabel));
 
         colorButton.setOnAction(event -> {
             int len = editor.getHtmlText().length();
@@ -988,7 +983,13 @@ for(String listentry55 : knt) {
         return colorButton;
     }
 
-    private Button createSendButton() throws MessagingException, ExecutionException, InterruptedException {
+    private Rectangle createSendButton() throws MessagingException, ExecutionException, InterruptedException {
+
+        Image sendImage = new Image("file:src/bilder/send2.png"); //soll man diese oben als private deklarieren?
+        ImagePattern imagePattern = new ImagePattern(sendImage,0, 0, 1, 1, true);
+
+        Rectangle sendIcon = new Rectangle(50,35);
+        sendIcon.setFill(imagePattern);
 
         sendButton = new Button();
         sendButton.setText("Send");
@@ -1050,7 +1051,7 @@ for(String listentry55 : knt) {
             Model1.sleeptime = 64;
         });
 
-        return sendButton;
+        return sendIcon;
     }
 
     public static void hackTooltipStartTiming(Tooltip tooltip) { //needed? yes eventually for the +(new mail) icon!
