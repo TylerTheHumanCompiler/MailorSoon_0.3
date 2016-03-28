@@ -202,7 +202,7 @@ public class oop2 extends Application {
 
     private Background background() {
 
-        image = new Image("file:src/bilder/berge.jpg"); // test bild
+        image = new Image("file:src/bilder/epicsmiley.gif"); // test bild
         backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true);
         //backgroundSize.isCover();
         backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
@@ -489,7 +489,7 @@ for(String listentry55 : knt) {
 
         webStack = new StackPane();
         //webStack.setStyle("-fx-border-color: red;  -fx-background-color: white; -fx-opacity: 1"); // test
-        webStack.getChildren().addAll(editor, view);
+        webStack.getChildren().addAll(editor);
 
 
         return webStack;
@@ -517,7 +517,10 @@ for(String listentry55 : knt) {
             oop2.mailAdress.clear();
         });
 
-        editToggleButtonLabel  = new Label("Edit"); //only use label if rotate of button is needed
+
+
+
+/*        editToggleButtonLabel  = new Label("Edit"); //only use label if rotate of button is needed
         //editToggleButtonLabel.setRotate(-90);
         editToggleButtonLabel.setStyle("-fx-text-fill: black");
         editToggleButtonLabel.setPrefHeight(20);
@@ -542,7 +545,7 @@ for(String listentry55 : knt) {
             }
         });
 
-        editToggleButton.fire();
+        editToggleButton.fire();*/
 
 
 
@@ -565,7 +568,7 @@ for(String listentry55 : knt) {
         );
 
         VBox sideMenuButtons = new VBox(5); //oben deklarieren?
-        sideMenuButtons.getChildren().addAll(sidebar.getControlButton(), newMailButton, editToggleButton, attachButton);
+        sideMenuButtons.getChildren().addAll(sidebar.getControlButton(), newMailButton, attachButton);
         sideMenuButtons.setPadding(new Insets(10, 5, 10, 5));
 
         return sideMenuButtons;
@@ -638,7 +641,7 @@ for(String listentry55 : knt) {
 
     private Button createColorButton() throws MessagingException, ExecutionException, InterruptedException {
 
-        Image rainbow = new Image("file:src/bilder/rainbow.jpg"); //soll man diese oben als private deklarieren?
+        Image rainbow = new Image("file:src/bilder/rainbow.png"); //soll man diese oben als private deklarieren?
         ImageView imageView = new ImageView(rainbow);
         imageView.setFitHeight(20);
         imageView.setFitWidth(72);

@@ -676,12 +676,12 @@ public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior
         fgColorButton = new ColorPicker();
         fgColorButton.getStyleClass().add("html-editor-foreground");
         fgColorButton.setFocusTraversable(false);
-        toolbar1.getItems().add(fgColorButton);
+        //toolbar1.getItems().add(fgColorButton);
 
         fgColorButton.applyCss();
         ColorPickerSkin fgColorPickerSkin = (ColorPickerSkin) fgColorButton.getSkin();
-        String fgIcon = AccessController.doPrivileged((PrivilegedAction<String>) () -> HTMLEditorSkin.class.getResource(resources.getString("foregroundColorIcon")).toString());
-        ((StyleableProperty)fgColorPickerSkin.imageUrlProperty()).applyStyle(null,fgIcon);
+     //   String fgIcon = AccessController.doPrivileged((PrivilegedAction<String>) () -> HTMLEditorSkin.class.getResource(resources.getString("foregroundColorIcon")).toString());
+//        ((StyleableProperty)fgColorPickerSkin.imageUrlProperty()).applyStyle(null,fgIcon);
 
         fgColorButton.setValue(DEFAULT_FG_COLOR);
         fgColorButton.setTooltip(new Tooltip(resources.getString("foregroundColor")));
@@ -696,12 +696,12 @@ public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior
         bgColorButton = new ColorPicker();
         bgColorButton.getStyleClass().add("html-editor-background");
         bgColorButton.setFocusTraversable(false);
-        toolbar1.getItems().add(bgColorButton);
+        //toolbar1.getItems().add(bgColorButton);
 
         bgColorButton.applyCss();
         ColorPickerSkin  bgColorPickerSkin = (ColorPickerSkin) bgColorButton.getSkin();
-        String bgIcon = AccessController.doPrivileged((PrivilegedAction<String>) () -> HTMLEditorSkin.class.getResource(resources.getString("backgroundColorIcon")).toString());
-        ((StyleableProperty)bgColorPickerSkin.imageUrlProperty()).applyStyle(null,bgIcon);
+     //   String bgIcon = AccessController.doPrivileged((PrivilegedAction<String>) () -> HTMLEditorSkin.class.getResource(resources.getString("backgroundColorIcon")).toString());
+//        ((StyleableProperty)bgColorPickerSkin.imageUrlProperty()).applyStyle(null,bgIcon);
 
         bgColorButton.setValue(DEFAULT_BG_COLOR);
         bgColorButton.setTooltip(new Tooltip(resources.getString("backgroundColor")));
@@ -992,8 +992,8 @@ public class HTMLEddy2Skin extends BehaviorSkinBase<HTMLEddy2, HTMLEddy2Behavior
             italicButton.setDisable(!enable);
             underlineButton.setDisable(!enable);
             strikethroughButton.setDisable(!enable);
-            fgColorButton.setDisable(!enable);
-            bgColorButton.setDisable(!enable);
+       //     fgColorButton.setDisable(!enable);
+         //   bgColorButton.setDisable(!enable);
         });
     }
 
